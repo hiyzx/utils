@@ -11,8 +11,8 @@ public class EmojiUtil {
      * @return
      */
     public static String resolveToByteFromEmoji(String str) {
-        if(str == null || str.length() <= 0)
-            return  "";
+        if (str == null || str.length() <= 0)
+            return "";
         Pattern pattern = Pattern
                 .compile("[^(\u2E80-\u9FFF\\w\\s`~!@#\\$%\\^&\\*\\(\\)_+-？（）——=\\[\\]{}\\|;。，、《》”：；“！……’:'\"<,>\\.?/\\\\*)]");
         Matcher matcher = pattern.matcher(str);
@@ -46,8 +46,8 @@ public class EmojiUtil {
      * @return
      */
     public static String resolveToEmojiFromByte(String str) {
-        if(str == null || str.length() <= 0)
-            return  "";
+        if (str == null || str.length() <= 0)
+            return "";
         Pattern pattern2 = Pattern.compile("<:([[-]\\d*[,]]+):>");
         Matcher matcher2 = pattern2.matcher(str);
         StringBuffer sb3 = new StringBuffer();

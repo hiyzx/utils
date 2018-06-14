@@ -11,11 +11,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * ClassName: FileUtil
- *
- * @author angelo
- * @Description: 文件帮助工具
- * @date 2016-5-9
+ * @author yezhaoxing
+ * @since 2018/6/14
+ * @description 文件工具类
  */
 public class FileUtil {
 

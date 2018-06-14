@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author yezhaoxing
+ * @since 2018/6/14
+ * @description jackson工具类
+ */
 public class JsonUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(JsonUtil.class);
