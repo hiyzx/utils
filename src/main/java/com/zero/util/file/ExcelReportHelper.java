@@ -5,11 +5,9 @@ import com.zero.util.file.annotation.CellFormat;
 import com.zero.util.file.constant.SysConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +21,10 @@ import java.util.*;
  * @description excel导出工具类
  * @since 2018/06/12
  */
-public class ExcelHelper {
+public class ExcelReportHelper {
 
     /**
+     * @description 生成excel返回输出流
      * @param response
      *            response
      * @param excelName
@@ -35,9 +34,11 @@ public class ExcelHelper {
      * @param dataList
      *            数据
      */
-    public static void exportData(HttpServletResponse response, String excelName, Class<?> clazz, List<?> dataList)
+    public static void exportExcel(HttpServletResponse response, String excelName, Class<?> clazz, List<?> dataList)
             throws Exception {
-        XSSFWorkbook workbook = exportData(clazz, dataList);
+        List<String> titles = generateTitle(clazz);// 生成列标题
+        List<Map<String, Object>> dataMapList = generateValue(dataList);// 生成列值
+        XSSFWorkbook workbook = exportData(null, titles, dataMapList, excelName, true);
         response.setContentType("application/vnd.ms-excel");
         response.addHeader("Content-Disposition",
                 String.format("attachment; filename=%s.xlsx", new String((excelName).getBytes("GB2312"), "iso8859-1")));
@@ -45,13 +46,6 @@ public class ExcelHelper {
         workbook.write(os);
         os.flush();
         os.close();
-    }
-
-    private static XSSFWorkbook exportData(Class<?> clazz, List<?> dataList) throws Exception {
-        String className = clazz.getAnnotation(CellFormat.class).value();
-        List<String> titles = generateTitle(clazz);// 生成列标题
-        List<Map<String, Object>> dataMapList = generateValue(dataList);// 生成列值
-        return exportData(null, titles, dataMapList, className, true);
     }
 
     private static List<String> generateTitle(Class<?> clazz) {
@@ -118,7 +112,7 @@ public class ExcelHelper {
         return value;
     }
 
-    private static String dateCellFormat(Field field, Object value) {
+    private static String dateCellFormat(Field field, Object value) throws Exception {
         CellFormat cellFormat = field.getAnnotation(CellFormat.class);
         String patten;
         if (null != cellFormat && StringUtils.isNotEmpty(cellFormat.datePatten())) {
@@ -126,7 +120,7 @@ public class ExcelHelper {
         } else {
             patten = SysConstants.DEFAULT_PATTEN;
         }
-        return DateUtil.format((Date) value, patten);
+        return value == null ? "" : DateUtil.format((Date) value, patten);
     }
 
     // 递归获取子类及父类所有属性名称
@@ -221,7 +215,7 @@ public class ExcelHelper {
         XSSFCellStyle cellStyle = wb.createCellStyle();
         if (backColor) {
             // 设置单元格的背景颜色为淡蓝色
-            cellStyle.setFillForegroundColor(HSSFColor.PALE_BLUE.index);
+            cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.PALE_BLUE.getIndex());
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         }
         // 设置单元格居中对齐
@@ -238,45 +232,5 @@ public class ExcelHelper {
         font.setFontHeight((short) 200);
         cellStyle.setFont(font);
         return cellStyle;
-    }
-
-    /**
-     * @param sheet
-     * @param colIndex
-     *            合并的第几列 （下标从0开始）
-     * @param startRowIndex
-     *            从第几行开始合并（算上标题，从0开始算）
-     * @param endRowIndex
-     *            从第几行结束合并
-     */
-    private static Map<String, String> mergerData(XSSFSheet sheet, int colIndex, int startRowIndex, int endRowIndex) {
-        Map<String, String> map = new HashMap<>();
-
-        breakFor: for (int i = startRowIndex; i <= endRowIndex; i++) {
-            Cell cell = sheet.getRow(i).getCell(colIndex);
-
-            for (int j = i + 1; j <= endRowIndex; j++) {
-                Cell celltemp = sheet.getRow(j).getCell(colIndex);
-
-                // 如果下一行与被比较行相等，则继续该循环，直到不等才跳出
-                if (!celltemp.getStringCellValue().equals(cell.getStringCellValue())) {
-                    int temp = j - 1;
-                    if (temp > i) {
-                        // 合并单元格
-                        map.put(cell.getStringCellValue(), i + 1 + "," + j);
-                        sheet.addMergedRegion(new CellRangeAddress(i, temp, colIndex, colIndex));
-
-                    }
-                    i = temp;
-                    break;
-                }
-                if (j == endRowIndex) {
-                    map.put(cell.getStringCellValue(), i + 1 + "," + j);
-                    sheet.addMergedRegion(new CellRangeAddress(i, endRowIndex, colIndex, colIndex));
-                    break breakFor;
-                }
-            }
-        }
-        return map;
     }
 }
