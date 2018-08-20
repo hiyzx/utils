@@ -22,4 +22,5 @@ public @interface CellFormat {
 
     String datePatten() default "";
 
+    String firstTitle() default "";
 }
