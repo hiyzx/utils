@@ -1,11 +1,10 @@
 package com.zero.util.file;
 
 import com.zero.util.file.annotation.CellFormat;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -16,9 +15,8 @@ import java.util.*;
  * @author yezhaoxing
  * @since 2018/06/22
  */
+@Slf4j
 public class ExcelImportHelper {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ExcelImportHelper.class);
 
     /**
      * 导入excel
@@ -56,7 +54,7 @@ public class ExcelImportHelper {
             if (!allRowIsNull) {
                 list.add(t);
             } else {
-                LOG.info("导入Excel的第[{}]行整行为空", row.getRowNum());
+                log.info("导入Excel的第[{}]行整行为空", row.getRowNum());
             }
         }
         return list;

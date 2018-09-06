@@ -1,7 +1,6 @@
 package com.zero.util.file;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -15,9 +14,8 @@ import java.util.zip.ZipOutputStream;
  * @since 2018/6/14
  * @description 文件工具类
  */
+@Slf4j
 public class FileUtil {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * @param filePath
@@ -32,13 +30,13 @@ public class FileUtil {
             fw = new FileWriter(filePath, false);
             fw.write(content);
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (fw != null) {
                 try {
                     fw.close();
                 } catch (IOException e) {
-                    LOG.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -65,13 +63,13 @@ public class FileUtil {
             }
             return sb.toString();
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (fr != null) {
                 try {
                     fr.close();
                 } catch (IOException e) {
-                    LOG.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -118,13 +116,13 @@ public class FileUtil {
             toClient.flush();
             toClient.close();
         } catch (IOException ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         } finally {
             try {
                 File f = new File(file.getPath());
                 f.deleteOnExit();
             } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -150,7 +148,7 @@ public class FileUtil {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 }

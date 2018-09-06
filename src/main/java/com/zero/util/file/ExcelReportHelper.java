@@ -216,7 +216,6 @@ public class ExcelReportHelper {
                     if (temp > i) {
                         // 合并单元格
                         sheet.addMergedRegion(new CellRangeAddress(i, temp, colIndex, colIndex));
-
                     }
                     i = temp;
                     break;

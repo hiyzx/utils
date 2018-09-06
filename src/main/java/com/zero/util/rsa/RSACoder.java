@@ -17,8 +17,8 @@ public abstract class RSACoder extends Coder {
     public static final String KEY_ALGORITHM = "RSA";
     public static final String SIGNATURE_ALGORITHM = "MD5withRSA";
 
-    private static final String PUBLIC_KEY = "RSAPublicKey";
-    private static final String PRIVATE_KEY = "RSAPrivateKey";
+    private static String PUBLIC_KEY = "RSAPublicKey";
+    private static String PRIVATE_KEY = "RSAPrivateKey";
 
     /**
      * 用私钥对信息生成数字签名
@@ -92,24 +92,6 @@ public abstract class RSACoder extends Coder {
     }
 
     /**
-     * 解密<br>
-     * 用公钥解密
-     */
-    public static byte[] decryptByPublicKey(byte[] data, String key) throws Exception {
-        // 对密钥解密
-        byte[] keyBytes = decryptBASE64(key);
-        // 取得公钥
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-        Key publicKey = keyFactory.generatePublic(x509KeySpec);
-        // 对数据解密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        cipher.init(Cipher.DECRYPT_MODE, publicKey);
-
-        return cipher.doFinal(data);
-    }
-
-    /**
      * 加密<br>
      * 用公钥加密
      */
@@ -125,26 +107,6 @@ public abstract class RSACoder extends Coder {
         // 对数据加密
         Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-
-        return cipher.doFinal(data);
-    }
-
-    /**
-     * 加密<br>
-     * 用私钥加密
-     */
-    public static byte[] encryptByPrivateKey(byte[] data, String key) throws Exception {
-        // 对密钥解密
-        byte[] keyBytes = decryptBASE64(key);
-
-        // 取得私钥
-        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-        Key privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
-
-        // 对数据加密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
         return cipher.doFinal(data);
     }
@@ -182,10 +144,15 @@ public abstract class RSACoder extends Coder {
         // 私钥
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-        Map<String, Object> keyMap = new HashMap<String, Object>(2);
+        Map<String, Object> keyMap = new HashMap<>(2);
 
         keyMap.put(PUBLIC_KEY, publicKey);
         keyMap.put(PRIVATE_KEY, privateKey);
         return keyMap;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Map<String, Object> keyMap = initKey();
+
     }
 }

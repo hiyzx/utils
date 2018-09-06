@@ -6,7 +6,7 @@ package com.zero.util.file.filter;
  */
 public class CellFormatFilter {
 
-    public String filterCdCodeType(Object val) {
+    public String filterSuccess(Object val) {
         return (Boolean) val ? "成功" : "失败";
     }
 }

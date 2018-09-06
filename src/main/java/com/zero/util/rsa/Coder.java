@@ -44,6 +44,17 @@ public abstract class Coder {
     }
 
     /**
+     * MD5盐值加密
+     */
+    public static byte[] encryptMD5(byte[] data, String salt) throws Exception {
+
+        MessageDigest md5 = MessageDigest.getInstance(KEY_MD5);
+        md5.update(data);
+        return md5.digest(salt.getBytes());
+
+    }
+
+    /**
      * SHA加密
      */
     public static byte[] encryptSHA(byte[] data) throws Exception {
